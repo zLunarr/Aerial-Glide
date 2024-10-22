@@ -1,0 +1,11 @@
+import javax.swing.*;
+//Clase principal que extiende JFrame para crear la ventana del juego
+public class Juego extends JFrame {
+	public juego() {
+		setTitle("Aerial Glide"); //Titulo
+		setSize(400, 600); //Dimension de la ventana
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Al cerrar la ventana cierra el juego
+		add(new juegoPanel()); //Agrega el panel del juego a la ventana
+		setVisible(true);
+	}
+}
