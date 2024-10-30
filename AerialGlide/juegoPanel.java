@@ -1,14 +1,9 @@
 package juegojava;
+
 import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.ImageIcon;
-import javax.swing.Timer;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class juegoPanel extends JPanel implements ActionListener, KeyListener {
     private Timer tiempo;
@@ -16,7 +11,7 @@ public class juegoPanel extends JPanel implements ActionListener, KeyListener {
     private personaje pajaro;
 
     public juegoPanel() {
-        fondo = new ImageIcon("E:/JAVA/background.jpg").getImage();
+        fondo = new ImageIcon("D:/fondo.jpg").getImage();
         pajaro = new personaje(100, 300);
 
         tiempo = new Timer(20, this);
@@ -24,15 +19,14 @@ public class juegoPanel extends JPanel implements ActionListener, KeyListener {
 
         setFocusable(true);
         addKeyListener(this);
+        requestFocusInWindow(); // Asegura que el panel del juego tenga el foco
     }
 
-  
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
         pajaro.draw(g);
     }
-
 
     public void actionPerformed(ActionEvent e) {
         pajaro.update();
@@ -44,6 +38,7 @@ public class juegoPanel extends JPanel implements ActionListener, KeyListener {
             pajaro.jump();
         }
     }
+
     public void keyReleased(KeyEvent e) {}
     public void keyTyped(KeyEvent e) {}
 }
