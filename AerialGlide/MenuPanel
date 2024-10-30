@@ -1,0 +1,83 @@
+package juegojava;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+class MenuPanel extends JPanel {
+    public MenuPanel(JFrame frame) {
+        setLayout(new GridBagLayout()); // Para centrar los botones
+        setBackground(Color.BLACK); // Color de fondo
+
+        // Crear botones
+        JButton jugarButton = new JButton("Jugar");
+        JButton elegirButton = new JButton("Elegir Personaje");
+        JButton opcionesButton = new JButton("Opciones");
+
+        // Estilo de los botones
+        JButton[] buttons = {jugarButton, elegirButton, opcionesButton};
+        for (JButton button : buttons) {
+            button.setPreferredSize(new Dimension(300, 50));
+            button.setFont(new Font("Arial", Font.BOLD, 24));
+            button.setBackground(Color.WHITE);
+            button.setForeground(Color.BLACK);
+            button.addActionListener(new ButtonClickListener(frame, button.getText()));
+        }
+
+        // Agregar botones al panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(20, 20, 20, 20); // Espaciado entre los botones
+        for (JButton button : buttons) {
+            add(button, gbc);
+            gbc.gridy++;
+        }
+    }
+
+    private class ButtonClickListener implements ActionListener {
+        private JFrame frame;
+        private String action;
+
+        public ButtonClickListener(JFrame frame, String action) {
+            this.frame = frame;
+            this.action = action;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switch (action) {
+                case "Jugar":
+                    // Iniciar el juego
+                    startGame();
+                    break;
+                case "Elegir Personaje":
+                    // Mostrar la opción de elegir personaje
+                    showCharacterSelection();
+                    break;
+                case "Opciones":
+                    // Mostrar opciones del juego
+                    showOptions();
+                    break;
+            }
+        }
+
+        private void startGame() {
+            System.out.println("Iniciando el juego...");
+            // Cambiar al panel del juego
+            juegoPanel juego = new juegoPanel();
+            frame.setContentPane(juego);
+            frame.revalidate();
+            frame.repaint();
+            juego.requestFocusInWindow(); // Solicitar el foco para que el panel del juego reciba eventos de teclado
+        }
+
+        private void showCharacterSelection() {
+            System.out.println("Seleccionando personaje...");
+        }
+
+        private void showOptions() {
+            System.out.println("Mostrando opciones...");
+        }
+    }
+}
