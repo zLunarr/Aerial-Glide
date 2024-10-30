@@ -1,29 +1,26 @@
 package juegojava;
 
-import java.awt.Dimension;
-
-import javax.swing.JFrame;
+import java.awt.*;
+import javax.swing.*;
 
 public class ejecucion {
     public static void main(String[] args) {
         // Crear la ventana del juego
         JFrame frame = new JFrame();
-        // Crear el panel del juego
-        juegoPanel juego = new juegoPanel(); 
+        // Crear el panel del menú de inicio
+        MenuPanel menuPanel = new MenuPanel(frame);
 
-        // Agregar el panel del juego a la ventana
-        frame.add(juego);
-        juego.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        // Agregar el panel del menú a la ventana
+        frame.add(menuPanel);
+        frame.setPreferredSize(new Dimension(800, 600));
         frame.pack(); // Ajusta el tamaño de la ventana a la del panel
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         // Título de la ventana
-        frame.setTitle("Aerial Glide");
+        frame.setTitle("Aerial Glide - Menú de Inicio");
         // Cerrar la aplicación al salir
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Evitar que la ventana sea redimensionable
         frame.setResizable(false);
-        // Tamaño de la ventana
-        frame.setSize(2000, 1800);
         // Centrar la ventana en la pantalla
         frame.setLocationRelativeTo(null);
         // Mostrar la ventana
