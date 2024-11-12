@@ -26,7 +26,7 @@ public class personaje {
         this.velocidad = 0;
         // Cargar la imagen del pájaro
         try {
-            File file = new File("D:/bird.png");
+            File file = new File("C:/JAVA/pajaro.png");
             pjimagen = ImageIO.read(file); 
         } catch (IOException e) {
             e.printStackTrace();
