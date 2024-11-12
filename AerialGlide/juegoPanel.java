@@ -11,7 +11,7 @@ public class juegoPanel extends JPanel implements ActionListener, KeyListener {
     private personaje pajaro;
 
     public juegoPanel() {
-        fondo = new ImageIcon("D:/fondo.jpg").getImage();
+        fondo = new ImageIcon("C:/JAVA/background juego.jpg").getImage();
         pajaro = new personaje(100, 300);
 
         tiempo = new Timer(20, this);
