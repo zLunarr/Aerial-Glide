@@ -5,14 +5,16 @@ import java.awt.event.*;
 import javax.swing.*;
 
 class MenuPanel extends JPanel {
+    private Image fondo;
+
     public MenuPanel(JFrame frame) {
         setLayout(new GridBagLayout()); // Para centrar los botones
-        setBackground(Color.BLACK); // Color de fondo
+        fondo = new ImageIcon("C:/JAVA/background de carga.png").getImage(); // Carga la imagen de fondo
 
-        // Crear botones
-        JButton jugarButton = new JButton("Jugar");
-        JButton elegirButton = new JButton("Elegir Personaje");
-        JButton opcionesButton = new JButton("Opciones");
+        // Crear botones con imágenes
+        JButton jugarButton = new JButton("Jugar", new ImageIcon("C:/JAVA/play_button.png"));
+        JButton elegirButton = new JButton("Elegir Personaje", new ImageIcon("C:/JAVA/select_character.png"));
+        JButton opcionesButton = new JButton("Opciones", new ImageIcon("C:/JAVA/option_button.png"));
 
         // Estilo de los botones
         JButton[] buttons = {jugarButton, elegirButton, opcionesButton};
@@ -21,6 +23,8 @@ class MenuPanel extends JPanel {
             button.setFont(new Font("Arial", Font.BOLD, 24));
             button.setBackground(Color.WHITE);
             button.setForeground(Color.BLACK);
+            button.setHorizontalTextPosition(SwingConstants.CENTER); // Centra el texto sobre la imagen
+            button.setVerticalTextPosition(SwingConstants.BOTTOM); // Texto debajo de la imagen
             button.addActionListener(new ButtonClickListener(frame, button.getText()));
         }
 
@@ -33,6 +37,12 @@ class MenuPanel extends JPanel {
             add(button, gbc);
             gbc.gridy++;
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this); // Dibuja la imagen de fondo
     }
 
     private class ButtonClickListener implements ActionListener {
@@ -48,15 +58,12 @@ class MenuPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             switch (action) {
                 case "Jugar":
-                    // Iniciar el juego
                     startGame();
                     break;
                 case "Elegir Personaje":
-                    // Mostrar la opción de elegir personaje
                     showCharacterSelection();
                     break;
                 case "Opciones":
-                    // Mostrar opciones del juego
                     showOptions();
                     break;
             }
@@ -64,12 +71,11 @@ class MenuPanel extends JPanel {
 
         private void startGame() {
             System.out.println("Iniciando el juego...");
-            // Cambiar al panel del juego
             juegoPanel juego = new juegoPanel();
             frame.setContentPane(juego);
             frame.revalidate();
             frame.repaint();
-            juego.requestFocusInWindow(); // Solicitar el foco para que el panel del juego reciba eventos de teclado
+            juego.requestFocusInWindow();
         }
 
         private void showCharacterSelection() {
