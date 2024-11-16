@@ -5,85 +5,59 @@ import java.awt.event.*;
 import javax.swing.*;
 
 class MenuPanel extends JPanel {
-    private Image fondo;
+    private final Image fondo;
 
     public MenuPanel(JFrame frame) {
-        setLayout(new GridBagLayout()); // Para centrar los botones
-        fondo = new ImageIcon("C:/JAVA/background de carga.png").getImage(); // Carga la imagen de fondo
+        setLayout(new GridBagLayout());
+        fondo = new ImageIcon("C:/JAVA/juegojava/src/Resources/background.png").getImage();
 
-        // Crear botones con imágenes
-        JButton jugarButton = new JButton("Jugar", new ImageIcon("C:/JAVA/play_button.png"));
-        JButton elegirButton = new JButton("Elegir Personaje", new ImageIcon("C:/JAVA/select_character.png"));
-        JButton opcionesButton = new JButton("Opciones", new ImageIcon("C:/JAVA/option_button.png"));
+        // Configuración de botones
+        JButton jugarButton = crearBoton("Jugar", "C:/JAVA/juegojava/src/Resources/play_button.png");
+        JButton elegirButton = crearBoton("Elegir Personaje", "C:/JAVA/juegojava/src/Resources/select_character.png");
+        JButton opcionesButton = crearBoton("Opciones", "C:/JAVA/juegojava/src/Resources/option_button.png");
 
-        // Estilo de los botones
-        JButton[] buttons = {jugarButton, elegirButton, opcionesButton};
-        for (JButton button : buttons) {
-            button.setPreferredSize(new Dimension(300, 50));
-            button.setFont(new Font("Arial", Font.BOLD, 24));
-            button.setBackground(Color.WHITE);
-            button.setForeground(Color.BLACK);
-            button.setHorizontalTextPosition(SwingConstants.CENTER); // Centra el texto sobre la imagen
-            button.setVerticalTextPosition(SwingConstants.BOTTOM); // Texto debajo de la imagen
-            button.addActionListener(new ButtonClickListener(frame, button.getText()));
-        }
+        JButton[] botones = {jugarButton, elegirButton, opcionesButton};
+        agregarEventos(frame, botones);
 
-        // Agregar botones al panel
+        // Añadir botones al panel
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(20, 20, 20, 20);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(20, 20, 20, 20); // Espaciado entre los botones
-        for (JButton button : buttons) {
-            add(button, gbc);
+        for (JButton boton : botones) {
+            add(boton, gbc);
             gbc.gridy++;
         }
+    }
+
+    private JButton crearBoton(String texto, String rutaImagen) {
+        JButton boton = new JButton(texto, new ImageIcon(rutaImagen));
+        boton.setPreferredSize(new Dimension(300, 50));
+        boton.setFont(new Font("Arial", Font.BOLD, 18));
+        boton.setBackground(Color.WHITE);
+        boton.setForeground(Color.BLACK);
+        boton.setHorizontalTextPosition(SwingConstants.CENTER);
+        boton.setVerticalTextPosition(SwingConstants.BOTTOM);
+        return boton;
+    }
+
+    private void agregarEventos(JFrame frame, JButton[] botones) {
+        botones[0].addActionListener(e -> iniciarJuego(frame));
+        botones[1].addActionListener(e -> System.out.println("Seleccionando personaje..."));
+        botones[2].addActionListener(e -> System.out.println("Mostrando opciones..."));
+    }
+
+    private void iniciarJuego(JFrame frame) {
+        JuegoPanel juego = new JuegoPanel();
+        frame.setContentPane(juego);
+        frame.revalidate();
+        frame.repaint();
+        juego.requestFocusInWindow();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this); // Dibuja la imagen de fondo
-    }
-
-    private class ButtonClickListener implements ActionListener {
-        private JFrame frame;
-        private String action;
-
-        public ButtonClickListener(JFrame frame, String action) {
-            this.frame = frame;
-            this.action = action;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            switch (action) {
-                case "Jugar":
-                    startGame();
-                    break;
-                case "Elegir Personaje":
-                    showCharacterSelection();
-                    break;
-                case "Opciones":
-                    showOptions();
-                    break;
-            }
-        }
-
-        private void startGame() {
-            System.out.println("Iniciando el juego...");
-            juegoPanel juego = new juegoPanel();
-            frame.setContentPane(juego);
-            frame.revalidate();
-            frame.repaint();
-            juego.requestFocusInWindow();
-        }
-
-        private void showCharacterSelection() {
-            System.out.println("Seleccionando personaje...");
-        }
-
-        private void showOptions() {
-            System.out.println("Mostrando opciones...");
-        }
+        g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
     }
 }
