@@ -1,17 +1,17 @@
 package juegojava;
 
 import java.awt.*;
-import javax.swing.*;
+import javax.swing.ImageIcon;
 
 public class Obstaculos {
-    private int x, y, ancho, alto;
-    private final Image imagen;
+    private int x, y, width, height;
+    private Image imagen;
 
-    public Obstaculos(int x, int y, int ancho, int alto, String rutaImagen) {
+    public Obstaculos(int x, int y, int width, int height, String rutaImagen) {
         this.x = x;
         this.y = y;
-        this.ancho = ancho;
-        this.alto = alto;
+        this.width = width;
+        this.height = height;
         this.imagen = new ImageIcon(rutaImagen).getImage();
     }
 
@@ -20,14 +20,14 @@ public class Obstaculos {
     }
 
     public boolean fueraDePantalla() {
-        return x + ancho < 0;
+        return x + width < 0;
     }
 
     public void dibujar(Graphics g) {
-        g.drawImage(imagen, x, y, ancho, alto, null);
+        g.drawImage(imagen, x, y, width, height, null);
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, ancho, alto);
+        return new Rectangle(x, y, width, height);
     }
 }
