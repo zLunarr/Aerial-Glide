@@ -3,7 +3,7 @@ package juegojava;
 import java.awt.*;
 import javax.swing.*;
 
-public class ejecucion {
+public class Ejecucion {
     public static void main(String[] args) {
         // Crear la ventana del juego
         JFrame frame = new JFrame();
