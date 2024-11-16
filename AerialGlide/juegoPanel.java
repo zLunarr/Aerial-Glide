@@ -1,93 +1,104 @@
 package juegojava;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class JuegoPanel extends JPanel implements ActionListener, KeyListener {
-    private final Timer timer;
-    private final Image fondo;
-    private final Personaje personaje;
-    private final ArrayList<Obstaculos> obstaculos;
-    private int puntuacion;
-    private final int velocidadObstaculos = 5;
+    private Timer tiempo;
+    private Image fondo;
+    private Personaje pajaro;
+    private ArrayList<Obstaculos> obstaculos;
+    private int contadorTiempo;
+    private static final int ESPACIO_ENTRE_OBSTACULOS = 200;
+    private static final int ANCHO_OBSTACULO = 120;
 
     public JuegoPanel() {
         fondo = new ImageIcon("C:/JAVA/juegojava/src/Resources/fondo juego.jpg").getImage();
-        personaje = new Personaje(100, 300);
+        pajaro = new Personaje(100, 300);
         obstaculos = new ArrayList<>();
-        puntuacion = 0;
-
-        timer = new Timer(20, this);
-        timer.start();
+        tiempo = new Timer(20, this);
+        tiempo.start();
 
         setFocusable(true);
         addKeyListener(this);
-        generarObstaculos();
+        requestFocusInWindow();
     }
 
-    private void generarObstaculos() {
-        obstaculos.add(new Obstaculos(800, 200, 80, 200, "C:/JAVA/juegojava/src/Resources/obstacle.png"));
-    }
-
-    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
-        personaje.draw(g);
+        pajaro.draw(g);
 
+        // Dibujar obstáculos
         for (Obstaculos obstaculo : obstaculos) {
             obstaculo.dibujar(g);
         }
-
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("Puntuación: " + puntuacion, 10, 30);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
-        personaje.update();
+        pajaro.update();
 
+        // Mover obstáculos y eliminar los que salen de la pantalla
         for (Obstaculos obstaculo : obstaculos) {
-            obstaculo.mover(velocidadObstaculos);
+            obstaculo.mover(6); // Velocidad de movimiento
         }
-
         obstaculos.removeIf(Obstaculos::fueraDePantalla);
 
-        if (obstaculos.isEmpty()) {
+        // Generar nuevos obstáculos cada cierto tiempo
+        contadorTiempo++;
+        if (contadorTiempo % 100 == 0) { // Ajusta para cambiar la frecuencia
             generarObstaculos();
-            puntuacion++;
         }
 
-        detectarColisiones();
-        repaint();
-    }
-
-    private void detectarColisiones() {
+        // Detectar colisiones
         for (Obstaculos obstaculo : obstaculos) {
-            if (personaje.getBounds().intersects(obstaculo.getBounds())) {
+            if (pajaro.getBounds().intersects(obstaculo.getBounds())) {
                 perder();
                 return;
             }
         }
+
+        repaint();
     }
 
-    private void perder() {
-        timer.stop();
-        JOptionPane.showMessageDialog(this, "¡Perdiste! Puntuación final: " + puntuacion);
+    private void generarObstaculos() {
+        int alturaVentana = getHeight();
+        int espacioVertical = 200; // Espacio entre los dos obstáculos
+        int alturaObstaculoSuperior = (int) (Math.random() * (alturaVentana - espacioVertical - 100)) + 60;
+
+        // Obstáculo superior
+        obstaculos.add(new Obstaculos(
+            getWidth(), 
+            0, 
+            ANCHO_OBSTACULO, 
+            alturaObstaculoSuperior, 
+            "C:/JAVA/juegojava/src/Resources/obstacle - copia.png"
+        ));
+
+        // Obstáculo inferior
+        obstaculos.add(new Obstaculos(
+            getWidth(), 
+            alturaObstaculoSuperior + espacioVertical, 
+            ANCHO_OBSTACULO, 
+            alturaVentana - alturaObstaculoSuperior - espacioVertical, 
+            "C:/JAVA/juegojava/src/Resources/obstacle.png"
+        ));
     }
 
-    @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            personaje.jump();
+            pajaro.jump();
         }
     }
 
-    @Override
     public void keyReleased(KeyEvent e) {}
-    @Override
     public void keyTyped(KeyEvent e) {}
+
+    private void perder() {
+        tiempo.stop();
+        JOptionPane.showMessageDialog(this, "¡Perdiste! Inténtalo de nuevo.");
+    }
 }
