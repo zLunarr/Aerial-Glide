@@ -3,20 +3,26 @@ package juegojava;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.sound.sampled.*;
+import java.io.*;
 
 class MenuPanel extends JPanel {
     private final Image fondo;
+    private Clip musicaFondo;
+    private boolean musicaActivada = true; // Variable para controlar el estado de la música
 
     public MenuPanel(JFrame frame) {
         setLayout(new GridBagLayout());
         fondo = new ImageIcon("C:/JAVA/juegojava/src/Resources/background.png").getImage();
 
+        // Cargar y reproducir música de fondo al abrir el menú
+        cargarMusicaFondo();
+
         // Configuración de botones
         JButton jugarButton = crearBoton("Jugar", "C:/JAVA/juegojava/src/Resources/play_button.png");
-        JButton elegirButton = crearBoton("Elegir Personaje", "C:/JAVA/juegojava/src/Resources/select_character.png");
         JButton opcionesButton = crearBoton("Opciones", "C:/JAVA/juegojava/src/Resources/option_button.png");
 
-        JButton[] botones = {jugarButton, elegirButton, opcionesButton};
+        JButton[] botones = {jugarButton, opcionesButton};
         agregarEventos(frame, botones);
 
         // Añadir botones al panel
@@ -32,8 +38,8 @@ class MenuPanel extends JPanel {
 
     private JButton crearBoton(String texto, String rutaImagen) {
         JButton boton = new JButton(texto, new ImageIcon(rutaImagen));
-        boton.setPreferredSize(new Dimension(300, 50));
-        boton.setFont(new Font("Arial", Font.BOLD, 18));
+        boton.setPreferredSize(new Dimension(300, 60));
+        boton.setFont(new Font("Arial", Font.BOLD, 20));
         boton.setBackground(Color.WHITE);
         boton.setForeground(Color.BLACK);
         boton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -42,17 +48,125 @@ class MenuPanel extends JPanel {
     }
 
     private void agregarEventos(JFrame frame, JButton[] botones) {
-        botones[0].addActionListener(e -> iniciarJuego(frame));
-        botones[1].addActionListener(e -> System.out.println("Seleccionando personaje..."));
-        botones[2].addActionListener(e -> System.out.println("Mostrando opciones..."));
+        botones[0].addActionListener(e -> iniciarJuego(frame));  // Iniciar el juego
+        botones[1].addActionListener(e -> mostrarOpciones(frame));  // Mostrar opciones
     }
 
     private void iniciarJuego(JFrame frame) {
-        JuegoPanel juego = new JuegoPanel();
+        // Detener la música de fondo antes de iniciar el juego
+        if (musicaFondo != null && musicaFondo.isRunning()) {
+            musicaFondo.stop();
+        }
+
+        // Crear el panel del juego
+        JuegoPanel juego = new JuegoPanel(musicaActivada);  // Pasamos el estado de la música
+
+        // Aplicar el contenido del panel del juego a la ventana
         frame.setContentPane(juego);
         frame.revalidate();
         frame.repaint();
+
+        // Iniciar el juego
         juego.requestFocusInWindow();
+    }
+
+    private void mostrarOpciones(JFrame frame) {
+        // Crear un panel para las opciones
+        JPanel panelOpciones = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this); // Usar el mismo fondo
+            }
+        };
+        panelOpciones.setLayout(new GridBagLayout());
+
+        // Crear un JCheckBox para activar/desactivar la música
+        JCheckBox musicaCheckBox = new JCheckBox("Activar música");
+        musicaCheckBox.setSelected(musicaActivada);
+
+        // Acción para controlar la música
+        musicaCheckBox.addItemListener(e -> {
+            if (musicaCheckBox.isSelected()) {
+                activarMusica();
+            } else {
+                detenerMusica();
+            }
+        });
+
+        // Configuración para centrar el JCheckBox
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelOpciones.add(musicaCheckBox, gbc);
+
+        // Crear un botón para cerrar las opciones
+        JButton cerrarButton = new JButton("Cerrar Opciones");
+        cerrarButton.addActionListener(e -> {
+            // Reactivar música al volver al menú si está activada
+            if (musicaActivada && (musicaFondo != null && !musicaFondo.isRunning())) {
+                activarMusica();
+            }
+
+            // Volver al menú principal
+            frame.setContentPane(this);
+            frame.revalidate();
+            frame.repaint();
+        });
+
+        // Centrar el botón "Cerrar Opciones"
+        gbc.gridy = 1;
+        panelOpciones.add(cerrarButton, gbc);
+
+        // Reemplazar el contenido de la ventana con el panel de opciones
+        frame.setContentPane(panelOpciones);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    private void cargarMusicaFondo() {
+        try {
+            if (musicaFondo == null) {
+                File musicaArchivo = new File("C:/JAVA/juegojava/src/Resources/Juego 35.wav");
+                if (!musicaArchivo.exists()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "El archivo de música no se encuentra en la ruta especificada.", 
+                        "Error de música", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicaArchivo);
+                musicaFondo = AudioSystem.getClip();
+                musicaFondo.open(audioStream);
+
+                if (musicaActivada) {
+                    activarMusica();
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar la música: " + e.getMessage(), 
+                "Error de música", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void activarMusica() {
+        if (musicaFondo != null && !musicaFondo.isRunning()) {
+            musicaFondo.setFramePosition(0);
+            musicaFondo.start();
+            musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
+            musicaActivada = true;
+        }
+    }
+
+    private void detenerMusica() {
+        if (musicaFondo != null && musicaFondo.isRunning()) {
+            musicaFondo.stop();
+        }
+        musicaActivada = false;
     }
 
     @Override
