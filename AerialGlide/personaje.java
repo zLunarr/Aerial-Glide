@@ -1,47 +1,68 @@
-	package juegojava;
-	
-	import java.awt.Graphics;
-	import java.awt.Image;
-	import javax.swing.ImageIcon;
-	import java.awt.Rectangle;
-	
-	public class Personaje {
-	    private int x, y, velocidad;
-	    private final int ancho = 90, alto = 90;
-	    private final Image imagen;
-	    private boolean enSuelo;  // Variable para saber si el personaje tocó el suelo
-	
-	    public Personaje(int x, int y) {
-	        this.x = x;
-	        this.y = y;
-	        this.velocidad = 0;
-	        this.imagen = new ImageIcon("C:/JAVA/juegojava/src/Resources/bird.png").getImage();
-	        this.enSuelo = false;  // Inicialmente, no está en el suelo
-	    }
-	
-	    public void update() {
-	        y += velocidad;
-	        velocidad += 1; // Gravedad
+package juegojava;
 
-	        if (y + alto > 800) { // Límite inferior
-	            y = 800 - alto;
-	            velocidad = 0;
-	        }
-	        if (y < 0) { // Límite superior
-	            y = 0;
-	            velocidad = 0;
-	        }
-	    }
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import java.awt.Rectangle;
 
-	    public void jump() {
-	        velocidad = -15;
-	    }
+public class Personaje {
+    private int x, y, velocidad;
+    private final int ancho = 90, alto = 90;
+    private final Image imagen;
+    private final int gravedad = 1;  // Constante para simular la gravedad
 
-	    public void draw(Graphics g) {
-	        g.drawImage(imagen, x, y, ancho, alto, null);
-	    }
+    public Personaje(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.velocidad = 0; // Inicia estático
+        this.imagen = new ImageIcon("C:/JAVA/juegojava/src/Resources/bird.png").getImage();
+    }
 
-	    public Rectangle getBounds() {
-	        return new Rectangle(x, y, ancho, alto);
-	    }
-	}
+    /**
+     * Actualiza la posición y velocidad del personaje.
+     * @param panelHeight Altura del panel para limitar el movimiento del personaje.
+     */
+    public void update(int panelHeight) {
+        y += velocidad;      // Actualizar posición
+        velocidad += gravedad; // Aplicar gravedad
+
+        // Verificar si el personaje toca el suelo
+        if (y + alto >= panelHeight) {
+            y = panelHeight - alto; // Ajustar posición para no salir del panel
+            if (velocidad > 0) {
+                velocidad = 0;     // Detener caída solo si iba descendiendo
+            }
+        }
+
+        // Verificar si el personaje toca el límite superior
+        if (y < 0) {
+            y = 0;       // No permitir que salga por arriba
+            if (velocidad < 0) {
+                velocidad = 0; // Detener ascenso
+            }
+        }
+    }
+
+    /**
+     * Realiza un salto.
+     */
+    public void jump() {
+        velocidad = -15; // Valor negativo para moverse hacia arriba
+    }
+
+    /**
+     * Dibuja el personaje en pantalla.
+     * @param g Objeto Graphics para renderizar.
+     */
+    public void draw(Graphics g) {
+        g.drawImage(imagen, x, y, ancho, alto, null);
+    }
+
+    /**
+     * Devuelve los límites del personaje para detección de colisiones.
+     * @return Un rectángulo que representa los límites del personaje.
+     */
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, ancho, alto);
+    }
+}
