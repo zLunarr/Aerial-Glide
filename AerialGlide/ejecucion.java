@@ -19,11 +19,11 @@ public class Ejecucion {
         frame.setTitle("Aerial Glide - Menú de Inicio");
         // Cerrar la aplicación al salir
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Evitar que la ventana sea redimensionable
+        // Evita que la ventana sea redimensionable
         frame.setResizable(false);
-        // Centrar la ventana en la pantalla
+        // Centra la ventana en la pantalla
         frame.setLocationRelativeTo(null);
-        // Mostrar la ventana
+        // Muestra la ventana
         frame.setVisible(true);
     }
 }
