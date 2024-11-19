@@ -1,5 +1,4 @@
 package juegojava;
-
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -18,12 +17,10 @@ public class Personaje {
         this.imagen = new ImageIcon("C:/JAVA/juegojava/src/Resources/bird.png").getImage();
     }
 
-    /**
-     * Actualiza la posición y velocidad del personaje.
-     * @param panelHeight Altura del panel para limitar el movimiento del personaje.
-     */
+     //Actualiza la posición y velocidad del personaje.
+     //panelHeight Altura del panel para limitar el movimiento del personaje.
     public void update(int panelHeight) {
-        y += velocidad;      // Actualizar posición
+        y += velocidad; // Actualizar posición
         velocidad += gravedad; // Aplicar gravedad
 
         // Verificar si el personaje toca el suelo
@@ -43,25 +40,17 @@ public class Personaje {
         }
     }
 
-    /**
-     * Realiza un salto.
-     */
     public void jump() {
         velocidad = -15; // Valor negativo para moverse hacia arriba
     }
-
-    /**
-     * Dibuja el personaje en pantalla.
-     * @param g Objeto Graphics para renderizar.
-     */
+    
+    //Dibuja el personaje en pantalla.
     public void draw(Graphics g) {
         g.drawImage(imagen, x, y, ancho, alto, null);
     }
 
-    /**
-     * Devuelve los límites del personaje para detección de colisiones.
-     * @return Un rectángulo que representa los límites del personaje.
-     */
+    //Devuelve los límites del personaje para detección de colisiones.
+	//Un rectángulo que representa los límites del personaje.
     public Rectangle getBounds() {
         return new Rectangle(x, y, ancho, alto);
     }
