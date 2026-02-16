@@ -1,0 +1,18 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':core')
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${gdxVersion}"
+    implementation "com.badlogicgames.gdx:gdx-platform:${gdxVersion}:natives-desktop"
+}
+
+application {
+    mainClass = 'com.aerialglide.DesktopLauncher'
+}
+
+tasks.named('run', JavaExec) {
+    workingDir = file('..')
+    setIgnoreExitValue(true)
+}
